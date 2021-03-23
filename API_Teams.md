@@ -13,6 +13,7 @@ This scenario will walk through the following:
 * Viewing all users
 * Creating a team (with an existing user)
 * Updating a team (with a new set of users)
+* Inviting users to the organization
 
 For the API calls that create/update/delete the teams you will need to use a user API access token. You can find this on your [profile page](https://app.us1.signalfx.com/#/myprofile).
 
@@ -82,4 +83,18 @@ To delete a team:
 DELETE https://api.us1.signalfx.com/v2/team/<team id>
 content-type: application/json
 X-SF-TOKEN: <token>
+```
+
+### Inviting users to the organization
+
+To invite a user:
+
+```
+POST https://api.us1.signalfx.com/v2/organization/member
+content-type: application/json
+X-SF-Token: <token>
+
+{
+  "email": "<email-address>"
+}
 ```
