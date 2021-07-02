@@ -28,9 +28,21 @@ def run(hostname, realm, token):
     print("ERROR: Check your token, that's the most likely issue.")
     return
 
+  if (cnt == 0):
+    # Let's try using host instead of host.name (SmartAgent)
+    print("--> No results for host.name, trying host")
+    url = "https://api.{}.signalfx.com/v2/metrictimeseries?limit={}&query=host:{}".format(realm, limit, hostname)
+    response = requests.get(url, headers=headers)
+    responseJSON = json.loads(response.text)
+    try:
+      cnt = responseJSON["count"]
+    except:
+      print("ERROR: Unusual to fail here, probably an issue with the script.")
+      return
+
   if (cnt > limit):
     print("Need to increase limit, this host has > {} mts's.".format(limit))
-    return
+    return    
 
   # Add metrics to a list
   arr = []
