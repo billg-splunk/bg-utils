@@ -19,7 +19,8 @@ def run(hostname, realm, token):
   headers = {"Content-Type": "application/json", "X-SF-TOKEN": "{}".format(token) }
   response = requests.get(url, headers=headers)
   responseJSON = json.loads(response.text)
-  
+  #print(response.text)
+
   # If the result count is > limit, say so and exit
   try:
     cnt = responseJSON["count"]
@@ -36,9 +37,11 @@ def run(hostname, realm, token):
   for result in responseJSON['results']:
     arr.append(result['metric'])
 
+  totalCount = len(arr)
   arr = list(set(arr)) # Remove Duplicates
   arr.sort()
   print(*arr, sep = "\n") # Print one per line
+  print("--> {} metrics; {} mts".format(len(arr), totalCount))
 
 if __name__ == '__main__':
   with open('token.yaml', 'r') as ymlfile:
