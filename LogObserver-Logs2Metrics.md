@@ -65,7 +65,7 @@ sudo chown td-agent:td-agent /etc/otel/collector/fluentd/conf.d/logstometrics.co
 sudo chmod 755 /etc/otel/collector/fluentd/conf.d/logstometrics.conf
 ```
 
-It's importand that the td-agent user can access where the log file exists, so change the permissions if needed. You can test with:
+It's important that the td-agent user can access where the log file exists, so change the permissions if needed. You can test with:
 ```
 sudo -u td-agent test -r /home/ubuntu/logstometrics.txt || echo "fail"
 ```
@@ -80,7 +80,7 @@ Run the script by running:
 /home/ubuntu/createlogs.sh
 ```
 
-You should see logs coming from Log Observer. If you see a lot of logs you can:
+You should see logs coming from Log Observer. You may not see anything in the raw field, and that's OK. If you see a lot of logs you can:
 * Add a filter on ```fluent.tag=logstometrics.example```
 * Click **settings** and add the **details** field
 
@@ -103,7 +103,7 @@ In both sections it is important we filter the logs on ```fluent.tag=logstometri
 * Preview the table at the bottom to verify your extraction looks correct, and click **Next**
 * Give it a name, like ```Extract Inserts/Updates/Deletes for logstometrics.example``` and click **Save**.
 * Go back to **Log Observer** and filter on ```fluent.tag=logstometrics.example```
-* Click **seetings** and add the **inserts**, **updates**, and **deletes** fields and verify you can see each value
+* Click **settings** and add the **inserts**, **updates**, and **deletes** fields and verify you can see each value
 
 ### Saving log entries as metrics
 
