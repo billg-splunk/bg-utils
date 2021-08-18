@@ -14,7 +14,7 @@ import requests
 import json
 
 def run(hostname, realm, token):
-  limit = 1000
+  limit = 5000
   url = "https://api.{}.signalfx.com/v2/metrictimeseries?limit={}&query=host.name:{}".format(realm, limit, hostname)
   headers = {"Content-Type": "application/json", "X-SF-TOKEN": "{}".format(token) }
   response = requests.get(url, headers=headers)
