@@ -11,36 +11,58 @@ import yaml
 import requests
 import json
 
-def getDimensions(realm, token):
-  limit = 5000 # For some reason breaks with a higher limit
-  arrDimensions = []
 
-  #for offset in range(1, 1000):
+
+def addDimensions(responseJSON, arrDimensions):
+  for result in responseJSON['results']:
+    arrDimensions.append(result['key'])
+  return arrDimensions
+
+def addCustomProperties(responseJSON, arrCustomProperties):
+  for result in responseJSON['results']:
+    customProps = result['customProperties']
+    for prop in customProps:
+      arrCustomProperties.append(prop)
+  return arrCustomProperties
+
+def addTags(responseJSON, arrTags):
+  return
+
+def callAPI(realm, token):
+  arrDimensions = []
+  arrCustomProperties = []
+  arrTags = []
+  limit = 5000 # For some reason breaks with a higher limit
   offset = 0
   while (1>0):
-    print(offset*limit)
     url = "https://api.{}.signalfx.com/v2/dimension?query=key:*&limit={}&offset={}".format(realm, limit, offset*limit)
     headers = {"Content-Type": "application/json", "X-SF-TOKEN": "{}".format(token) }
     response = requests.get(url, headers=headers)
     responseJSON = json.loads(response.text)
-    #print(response.text[0:300])
+    #print(response.text[0:1000])
     try:
       cnt = responseJSON["count"]
     except:
       print("ERROR: Check your token, that's the most likely issue.")
       break
-    for result in responseJSON['results']:
-      arrDimensions.append(result['key'])
+    
+    arrDimensions = addDimensions(responseJSON, arrDimensions)
+    arrCustomProperties = addCustomProperties(responseJSON, arrCustomProperties)
+
     offset = offset + 1
     if (offset * limit) >= cnt: # The next starting point would be past the last item
       break
   
   arrDimensions = list(set(arrDimensions)) # Remove Duplicates
   arrDimensions.sort()
-  print(*arrDimensions, sep = "\n") # Print one per line
 
-def run(realm, token):
-  getDimensions(realm, token)
+  arrCustomProperties = list(set(arrCustomProperties)) # Remove Duplicates
+  arrCustomProperties.sort()
+
+  print('********** Dimensions **********')
+  print(*arrDimensions, sep = "\n") # Print one per line
+  print('********** Custom Properties **********')
+  print(*arrCustomProperties, sep = "\n") # Print one per line
 
 if __name__ == '__main__':
   with open('token.yaml', 'r') as ymlfile:
@@ -54,5 +76,5 @@ if __name__ == '__main__':
   token = cfg['access_token'] if args.token is None else args.token
   realm = cfg['realm'] if args.realm is None else args.realm
 
-  run(realm, token)
+  callAPI(realm, token)
 
