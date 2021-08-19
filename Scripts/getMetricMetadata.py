@@ -2,9 +2,11 @@
 #
 # This script will get all metric metadata. 
 #
-# Edit token.yaml.sample to contain valid Access Token and rename to token.yaml
+# Edit token.yaml.sample to contain valid Access Token and Realm rename to token.yaml
 #
 # Syntax: python3 getMetricMetadata.py
+#
+# Alternate Syntax: python3 getMetricMetadata.py -t <token> -r <realm>
 
 import argparse
 import yaml
