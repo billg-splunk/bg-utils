@@ -11,13 +11,36 @@ import yaml
 import requests
 import json
 
+def getDimensions(realm, token):
+  limit = 5000 # For some reason breaks with a higher limit
+  arrDimensions = []
+
+  #for offset in range(1, 1000):
+  offset = 0
+  while (1>0):
+    print(offset*limit)
+    url = "https://api.{}.signalfx.com/v2/dimension?query=key:*&limit={}&offset={}".format(realm, limit, offset*limit)
+    headers = {"Content-Type": "application/json", "X-SF-TOKEN": "{}".format(token) }
+    response = requests.get(url, headers=headers)
+    responseJSON = json.loads(response.text)
+    #print(response.text[0:300])
+    try:
+      cnt = responseJSON["count"]
+    except:
+      print("ERROR: Check your token, that's the most likely issue.")
+      break
+    for result in responseJSON['results']:
+      arrDimensions.append(result['key'])
+    offset = offset + 1
+    if (offset * limit) >= cnt: # The next starting point would be past the last item
+      break
+  
+  arrDimensions = list(set(arrDimensions)) # Remove Duplicates
+  arrDimensions.sort()
+  print(*arrDimensions, sep = "\n") # Print one per line
+
 def run(realm, token):
-  limit = 5000
-  url = "https://api.{}.signalfx.com/v2/dimension?query=key:a*&limit={}".format(realm, limit)
-  headers = {"Content-Type": "application/json", "X-SF-TOKEN": "{}".format(token) }
-  response = requests.get(url, headers=headers)
-  responseJSON = json.loads(response.text)
-  print(response.text)
+  getDimensions(realm, token)
 
 if __name__ == '__main__':
   with open('token.yaml', 'r') as ymlfile:
@@ -28,15 +51,8 @@ if __name__ == '__main__':
   parser.add_argument('-t', '--token', help='Token', required=False)
   args = parser.parse_args()
 
-  if (args.token is None):
-    token = cfg['access_token']
-  else:
-    token = args.token
-
-  if (args.realm is None):
-    realm = cfg['realm']
-  else:
-    realm = args.realm
+  token = cfg['access_token'] if args.token is None else args.token
+  realm = cfg['realm'] if args.realm is None else args.realm
 
   run(realm, token)
 
