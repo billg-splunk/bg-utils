@@ -13,8 +13,6 @@ import yaml
 import requests
 import json
 
-
-
 def addDimensions(responseJSON, arrDimensions):
   for result in responseJSON['results']:
     arrDimensions.append(result['key'])
@@ -28,7 +26,10 @@ def addCustomProperties(responseJSON, arrCustomProperties):
   return arrCustomProperties
 
 def addTags(responseJSON, arrTags):
-  return
+  for result in responseJSON['results']:
+    for tag in result['tags']:
+      arrTags.append(tag)
+  return arrTags
 
 def callAPI(realm, token):
   arrDimensions = []
@@ -50,6 +51,7 @@ def callAPI(realm, token):
     
     arrDimensions = addDimensions(responseJSON, arrDimensions)
     arrCustomProperties = addCustomProperties(responseJSON, arrCustomProperties)
+    arrTags = addTags(responseJSON, arrTags)
 
     offset = offset + 1
     if (offset * limit) >= cnt: # The next starting point would be past the last item
@@ -61,10 +63,16 @@ def callAPI(realm, token):
   arrCustomProperties = list(set(arrCustomProperties)) # Remove Duplicates
   arrCustomProperties.sort()
 
+  arrTags = list(set(arrTags)) # Remove Duplicates
+  arrTags.sort()
+
+
   print('********** Dimensions **********')
   print(*arrDimensions, sep = "\n") # Print one per line
   print('********** Custom Properties **********')
   print(*arrCustomProperties, sep = "\n") # Print one per line
+  print('********** Tags **********')
+  print(*arrTags, sep = "\n") # Print one per line
 
 if __name__ == '__main__':
   with open('token.yaml', 'r') as ymlfile:
