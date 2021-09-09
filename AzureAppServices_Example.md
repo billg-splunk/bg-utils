@@ -2,7 +2,9 @@
 
 ## Introduction
 
-This will be based on the instructions found in the following resources:
+This example walks through setting up an example app deployed in Azure App Service and using the Splunk SignalFx extension.
+
+These steps are based on the instructions found in the following resources:
 * MS Azure app walkthrough to host a web app with App Service: https://docs.microsoft.com/en-us/learn/modules/host-a-web-app-with-azure-app-service/
 * Splunk Documentation on instrumenting an Azure App Service: https://docs.signalfx.com/en/latest/apm/apm-instrument/apm-azure-app.html
 
