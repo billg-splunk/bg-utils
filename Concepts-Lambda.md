@@ -25,7 +25,7 @@ Splunk provides Lambda layers to automatically instrument AWS Lambda functions t
 Resources:
 * [Documentation](https://docs.splunk.com/Observability/gdi/get-data-in/serverless/aws/splunk-otel-lambda-layer.html)
 * [Instrumenting](https://docs.splunk.com/Observability/gdi/get-data-in/serverless/aws/otel-lambda-layer/instrument-lambda-functions.html)
-* [Github](AzureAppServices_Example.mdhttps://github.com/signalfx/lambda-layer-versions/blob/master/splunk-apm/README.md)
+* [Github](https://github.com/signalfx/lambda-layer-versions/blob/master/splunk-apm/README.md)
   * OTel Layer supports Java, NodeJS and Python
   * If you are using these languages you should be using the layer if possible
 
