@@ -56,6 +56,6 @@ These instructions are based on [similar instructions for linux](https://github.
 ## Testing
 * You can test this config by sending the following
 ```
-echo %COMPUTERNAME%,"Here is sample text, sir...">>c:\log-test.log
+echo %COMPUTERNAME%,"Here is some sample text to chew on, I hope you can handle it...">>c:\log-test.log
 ```
 * If there are any issues you can check fluentd's log at ```C:\opt\td-agent\td-agent.log```
