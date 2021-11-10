@@ -1,7 +1,7 @@
 # Standalone fluentd on Windows
 These instructions are based on [similar instructions for linux](https://github.com/signalfx/splunk-otel-collector/blob/main/docs/experimental/using-fluentd-only.md).
 
-## Steps
+## Steps to Configure
 
 * [Install fluentd](https://www.fluentd.org/download)
   * MSI or other method should work. MSI method tested here.
@@ -51,6 +51,9 @@ These instructions are based on [similar instructions for linux](https://github.
   log_level info
 </system>
 ```
+* Restart the fluentd service for the changes to take effect
+  
+## Testing
 * You can test this config by sending the following
 ```
 echo %COMPUTERNAME%,"Here is sample text, sir...">>c:\log-test.log
