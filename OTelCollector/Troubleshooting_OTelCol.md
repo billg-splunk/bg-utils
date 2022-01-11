@@ -16,6 +16,17 @@ service:
       level: "debug"
 ```
 
+## Install issues
+
+One potential issue with installation may be how TLS is configured.
+
+On Windows this can be resolved by running the following prior to running the installer:
+
+```
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+```
+
+Note this command will only work in this session, so if you open another you will need to run this again.
 ## Connection issues
 
 One check to make is if you can send a datapoint. Update the token and realm and use the following commands.
