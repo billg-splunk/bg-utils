@@ -72,4 +72,25 @@ And the data is:
     }
   ]
 }
+
+## Proxies
+
+It may be that you need to configure the proxy for your environment. This can be done by setting environment variables:
+
+```
+# Skip the "NO_PROXY" lines if you don't have any addresses to skip the proxy
+# On Linux
+sudo sed -i '$ a [Service]' /etc/systemd/system/splunk-otel-collector.service.d/service-proxy.conf
+sudo sed -i '$ a Environment="NO_PROXY=localhost,127.0.0.1,169.254.169.254,::1" ' /etc/systemd/system/splunk-otel-collector.service.d/service-proxy.conf
+sudo sed -i '$ a HTTP_PROXY="http://<YOUR_PROXY_SERVER_IP:PORT>" ' /etc/systemd/system/splunk-otel-collector.service.d/service-proxy.conf
+sudo sed -i '$ a HTTPS_PROXY="http://<YOUR_PROXY_SERVER_IP:PORT>" ' /etc/systemd/system/splunk-otel-collector.service.d/service-proxy.conf# On Windows
+sudo systemctl daemon-reload
+sudo systemctl restart splunk-otel-collector
+# On Windows
+[Environment]::SetEnvironmentVariable("http_proxy","http://<YOUR_PROXY_SERVER_IP:PORT>","Machine")
+[Environment]::SetEnvironmentVariable("https_proxy","http://<YOUR_PROXY_SERVER_IP:PORT>","Machine")
+[Environment]::SetEnvironmentVariable("no_proxy","169.254.169.254","Machine")
+Stop-Service -Name "splunk-otel-collector"
+Start-Service -Name "splunk-otel-collector"
+```
  
