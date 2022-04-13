@@ -45,25 +45,6 @@ def callAPI(realm, token, days):
   arrDetectors = getDetectors(responseJSON, arrDetectors, days)
   print(arrDetectors)
 
-  #arrDimensions = addDimensions(responseJSON, arrDimensions)
-  #arrCustomProperties = addCustomProperties(responseJSON, arrCustomProperties)
-  #arrTags = addTags(responseJSON, arrTags)
-  
-  #arrDimensions = list(set(arrDimensions)) # Remove Duplicates
-  #arrDimensions.sort()
-
-  #arrCustomProperties = list(set(arrCustomProperties)) # Remove Duplicates
-  #arrCustomProperties.sort()
-
-  #arrTags = list(set(arrTags)) # Remove Duplicates
-  #arrTags.sort()
-
-  #print(*arrDimensions, sep = "\n") # Print one per line
-  #print('********** Custom Properties **********')
-  #print(*arrCustomProperties, sep = "\n") # Print one per line
-  #print('********** Tags **********')
-  #print(*arrTags, sep = "\n") # Print one per line
-
 if __name__ == '__main__':
   with open('token.yaml', 'r') as ymlfile:
     cfg = yaml.safe_load(ymlfile)
