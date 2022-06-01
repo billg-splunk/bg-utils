@@ -12,12 +12,13 @@ import yaml
 import requests
 import json
 import time
+from os.path import exists
 
 def callAPI(realm, token, minutes, output):
   limit = 10000 # For some reason breaks with a higher limit
   offset = 0
   current_time = int(time.time() * 1000)
-  start_time = current_time - (minutes * 60 * 1000)
+  start_time = current_time - (int(minutes) * 60 * 1000)
   # Not sure if there is a difference between these
   #url = "https://api.{}.signalfx.com/v2/event/find?query=sf_eventCategory:AUDIT&start_time={}&limit={}".format(realm, start_time, limit)
   url = "https://api.{}.signalfx.com/v2/event/find?query=sf_eventType:SessionLog&start_time={}&limit={}".format(realm, start_time, limit)
@@ -30,8 +31,9 @@ def callAPI(realm, token, minutes, output):
     print(f"Results saved to file: {output}")
 
 if __name__ == '__main__':
-  with open('token.yaml', 'r') as ymlfile:
-    cfg = yaml.safe_load(ymlfile)
+  if ( exists('token.yaml') ):
+    with open('token.yaml', 'r') as ymlfile:
+      cfg = yaml.safe_load(ymlfile)
   
   parser = argparse.ArgumentParser(description='Splunk - Get Logins')
   parser.add_argument('-r', '--realm', help='Realm', required=False)
@@ -40,8 +42,12 @@ if __name__ == '__main__':
   parser.add_argument('-m', '--minutes', help='Number of minutes to output (default = 60 mins)', required=False, default=60)
   args = parser.parse_args()
 
-  token = cfg['access_token'] if args.token is None else args.token
-  realm = cfg['realm'] if args.realm is None else args.realm
-
+  try:
+    token = cfg['access_token'] if args.token is None else args.token
+    realm = cfg['realm'] if args.realm is None else args.realm
+  except:
+    print('ERROR: Need to define either config file or arguments')
+    exit()
+    
   callAPI(realm, token, args.minutes, args.output)
 
