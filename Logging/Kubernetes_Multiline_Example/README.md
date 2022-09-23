@@ -71,7 +71,7 @@ In the directory review the `values.yml` file. It is configured for pods named `
 from:
   container: app
 multiline:
-  firstline: ^[0-9]{4}-[0-9]{2}-[0-9]{2}.*
+  firstline: /^[0-9]{4}-[0-9]{2}-[0-9]{2}.*/
 ```
 
 To use this new config, but retain the rest of the config already set:
