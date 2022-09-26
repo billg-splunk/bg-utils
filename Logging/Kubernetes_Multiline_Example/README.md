@@ -82,7 +82,7 @@ helm list
 helm upgrade --reuse-values -f values.yml splunk-otel-collector-########## splunk-otel-collector-chart/splunk-otel-collector
 ```
 
-## Review the logs again in Splunk Observasbility Cloud
+## Review the logs again in Splunk Observability Cloud
 Now you will see the multiline log entries are brought together
 ![Example After](img/Example_After.png)
 
