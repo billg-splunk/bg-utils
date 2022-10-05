@@ -18,6 +18,8 @@ handler = JournalHandler()
 formatter = logging.Formatter('%(asctime)s {"Logger": "%(name)s", "Level": "%(levelname)s", "Message": "%(message)s"}')
 if (args['test'] == 1):
   formatter = logging.Formatter('%(asctime)s {"Logger": "%(name)s", "Level": "%(levelname)s", "Message": "%(message)s"}')
+if (args['test'] == 2):
+    formatter = logging.Formatter('%(asctime)s {"Logger": "%(name)s", "severity": "%(levelno)s", "Message": "%(message)s"}')
 
 handler.setFormatter(formatter)
 root.addHandler(handler)
