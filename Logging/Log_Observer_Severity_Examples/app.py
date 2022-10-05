@@ -23,7 +23,7 @@ handler.setFormatter(formatter)
 root.addHandler(handler)
 
 while 1:
-  rnd = random.randomrange(1,4)
+  rnd = random.randrange(1,4)
   if rnd == 1:
     root.error('this is an error')
   if rnd == 2:
