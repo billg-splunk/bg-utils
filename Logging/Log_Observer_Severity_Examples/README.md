@@ -14,12 +14,10 @@ In python we are sending in json logs. Here is an example from one of the scenar
 
 ### Setup Code
 ```
-root = logging.getLogger()
-root.setLevel(logging.DEBUG)
-handler = JournalHandler()
-formatter = logging.Formatter('%(asctime)s {"Logger": "%(name)s", "Level": "%(levelname)s", "Message": "%(message)s"}')
-handler.setFormatter(formatter)
-root.addHandler(handler)
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+python3 app.py
 ```
 
 ### Sample Log Entry:

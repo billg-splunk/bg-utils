@@ -1,5 +1,7 @@
 import logging
-from systemd.journal import JournalHandler
+#from systemd.journal import JournalHandler
+from cysystemd import journal
+
 import sys
 import time
 import argparse
@@ -12,15 +14,17 @@ args = vars(parser.parse_args())
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 
-handler = JournalHandler()
+#handler = JournalHandler()
+handler = journal.JournaldLogHandler()
 #handler.setLevel(logging.DEBUG)
 
 if (args['test'] == '1'):
   formatter = logging.Formatter('%(asctime)s {"Logger": "%(name)s", "Level": "%(levelname)s", "Message": "%(message)s"}')
+  handler.setFormatter(formatter)
 if (args['test'] == '2'):
   formatter = logging.Formatter('%(asctime)s {"Logger": "%(name)s", "severity": "%(levelno)s", "Message": "%(message)s"}')
+  handler.setFormatter(formatter)
 
-handler.setFormatter(formatter)
 root.addHandler(handler)
 
 while 1:
