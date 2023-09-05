@@ -1,0 +1,61 @@
+version: "3"
+services:
+  splunk-otel-collector-1:
+    image: quay.io/signalfx/splunk-otel-collector:latest
+    environment:
+      - SPLUNK_INGEST_URL=${SPLUNK_GATEWAY_INGEST_URL_A}
+      - SPLUNK_API_URL=${SPLUNK_GATEWAY_API_URL}
+      - SPLUNK_ACCESS_TOKEN=${SPLUNK_ACCESS_TOKEN_A}
+      - SPLUNK_CONFIG=/etc/otel/collector/config.yaml
+    volumes:
+      - ${PWD}/config-hosts.yaml:/etc/otel/collector/config.yaml
+    depends_on:
+      - splunk-otel-collector-gw
+  splunk-otel-collector-2:
+    image: quay.io/signalfx/splunk-otel-collector:latest
+    environment:
+      - SPLUNK_INGEST_URL=${SPLUNK_GATEWAY_INGEST_URL_A}
+      - SPLUNK_API_URL=${SPLUNK_GATEWAY_API_URL}
+      - SPLUNK_ACCESS_TOKEN=${SPLUNK_ACCESS_TOKEN_A}
+      - SPLUNK_CONFIG=/etc/otel/collector/config.yaml
+    volumes:
+      - ${PWD}/config-hosts.yaml:/etc/otel/collector/config.yaml
+    depends_on:
+      - splunk-otel-collector-gw
+  splunk-otel-collector-3:
+    image: quay.io/signalfx/splunk-otel-collector:latest
+    environment:
+      - SPLUNK_INGEST_URL=${SPLUNK_GATEWAY_INGEST_URL_B}
+      - SPLUNK_API_URL=${SPLUNK_GATEWAY_API_URL}
+      - SPLUNK_ACCESS_TOKEN=${SPLUNK_ACCESS_TOKEN_B}
+      - SPLUNK_CONFIG=/etc/otel/collector/config.yaml
+    volumes:
+      - ${PWD}/config-hosts.yaml:/etc/otel/collector/config.yaml
+    depends_on:
+      - splunk-otel-collector-gw
+  splunk-otel-collector-4:
+    image: quay.io/signalfx/splunk-otel-collector:latest
+    environment:
+      - SPLUNK_INGEST_URL=${SPLUNK_GATEWAY_INGEST_URL_C}
+      - SPLUNK_API_URL=${SPLUNK_GATEWAY_API_URL}
+      - SPLUNK_ACCESS_TOKEN=${SPLUNK_ACCESS_TOKEN_C}
+      - SPLUNK_CONFIG=/etc/otel/collector/config.yaml
+    volumes:
+      - ${PWD}/config-hosts.yaml:/etc/otel/collector/config.yaml
+    depends_on:
+      - splunk-otel-collector-gw
+  splunk-otel-collector-gw:
+    image: quay.io/signalfx/splunk-otel-collector:latest
+    environment:
+      #- SPLUNK_REALM=${SPLUNK_REALM}
+      - SPLUNK_ACCESS_TOKEN=${SPLUNK_ACCESS_TOKEN_A}
+      - SPLUNK_CONFIG=/etc/otel/collector/config.yaml
+      - SPLUNK_INGEST_URL=${SPLUNK_INGEST_URL}
+      - SPLUNK_API_URL=${SPLUNK_API_URL}
+    ports:
+      - "6060:6060"
+      - "9944:9944"
+      - "9945:9945"
+      - "9946:9946"
+    volumes:
+      - ${PWD}/config-gw.yaml:/etc/otel/collector/config.yaml
