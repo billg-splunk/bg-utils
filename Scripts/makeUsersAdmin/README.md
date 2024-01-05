@@ -15,9 +15,9 @@ email: username@company.com
 password: ABC123
 orgId: F2ax3-53sd3
 realm: us1
-
 ```
 
+* Edit script and adjust file paths to the location of your script
 * Add the following to crontab -e (use location of script)
 
 ```
