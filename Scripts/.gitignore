@@ -1,3 +1,4 @@
 !.gitignore
 token.yaml
 *.csv
+*.log
