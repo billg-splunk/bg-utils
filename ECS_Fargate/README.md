@@ -4,6 +4,8 @@ In this example we will look at deploying an ECS Fargate (serverless) service.
 
 A documentation example is found [here](https://docs.splunk.com/observability/en/gdi/opentelemetry/deployments/deployments-fargate-java.html). We will use those instructions with our simple Java app.
 
+NOTE: This example, like the others, is meant to demonstrate what's possible and does not serve as a recommendation for configuring AWS services. (A specific point is this service is accessed directly vs. through a load balancer.)
+
 ## Prerequisites
 You will need the following to run this example:
 - docker
@@ -11,10 +13,10 @@ You will need the following to run this example:
 - An AWS account
 
 ## Setup
-* First let's setup the log group
+* First let's setup the **log group**
   * In AWS Service Search, find `Cloudwatch` and navigate to it
   * select `Logs` > `Log Groups`, and create a new log group for `/ecs/agent-baked-in-example`
-* Next, let's find the ECS task execution ARN
+* Next, let's find the **ECS task execution ARN**
   * In AWS Service Search, find `IAM` and navigate to it
   * Click `Roles`
   * Search for `ecsTaskExecutionRole` and select it
@@ -84,7 +86,7 @@ docker push USERNAME/tomcat-with-splunk-java-agent:latest
               "options": {
                   "awslogs-create-group": "true",
                   "awslogs-group": "/ecs/agent-baked-in-example",
-                  "awslogs-region": "eu-west-1",
+                  "awslogs-region": "us-east-2",
                   "awslogs-stream-prefix": "ecs"
               },
               "secretOptions": []
@@ -122,7 +124,7 @@ docker push USERNAME/tomcat-with-splunk-java-agent:latest
               "options": {
                   "awslogs-create-group": "true",
                   "awslogs-group": "/ecs/agent-baked-in-example",
-                  "awslogs-region": "eu-west-1",
+                  "awslogs-region": "us-east-2",
                   "awslogs-stream-prefix": "ecs"
               },
               "secretOptions": []
@@ -145,6 +147,11 @@ docker push USERNAME/tomcat-with-splunk-java-agent:latest
 
   * Switch to `clusters`, click on the `sample` cluster, and create a new service
     * `Family` = `agent-baked-in-example`
-    * `Service Name` = `sample`
+    * `Service Name` = `myservice`
     * and click `Create`
-  * 
+
+![Create Service](img/create_service.png)
+
+This should be all you need to do. If you have any issues you may need to review the security group for your service. Inbound we need port 8080 open, and outbound we opened http (80) and https (443) to pull containers.
+
+Finally you can find the public URLs for each task. navigating to `http://<public ip>:8080` will show you the application and create traces.
