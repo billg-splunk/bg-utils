@@ -152,6 +152,20 @@ docker push USERNAME/tomcat-with-splunk-java-agent:latest
 
 ![Create Service](img/create_service.png)
 
-This should be all you need to do. If you have any issues you may need to review the security group for your service. Inbound we need port 8080 open, and outbound we opened http (80) and https (443) to pull containers.
+At this point we have:
+* The service and otel collector sidecar deployed to ECS
+* Logs flowing to Cloudwatch
+* Traces and Infrastructure metrics flowing to Splunk Observability Cloud
 
-Finally you can find the public URLs for each task. navigating to `http://<public ip>:8080` will show you the application and create traces.
+You can navigate to each task to get the public ip of that task:
+![Task IP](img/task_ip.png)
+
+If you have any issues you may need to review the security group for your service. Inbound we need port 8080 open, and outbound we opened http (80) and https (443) to pull containers.
+
+Navigating to the service and clicking through the examples should show traces. In my example, when creating the service I chose 2 tasks, so I can see both in O11y Cloud.
+
+My service with two tasks:
+![Two tasks](img/two_tasks.png)
+
+In **Splunk Observability Cloud**, after navigating both urls, traces from both tasks, by grouping by `aws.ecs.task.id`:
+![Tasks in O11y Cloud](img/tasks_in_o11y_cloud.png)
