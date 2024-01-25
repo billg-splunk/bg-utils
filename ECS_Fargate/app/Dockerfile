@@ -11,6 +11,8 @@ RUN curl -L0 https://github.com/signalfx/splunk-otel-java/releases/latest/downlo
 
 WORKDIR /usr/local/tomcat/webapps
 
+COPY simple.war .
+
 EXPOSE 8080
 
 CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]

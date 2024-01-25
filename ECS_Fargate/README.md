@@ -31,6 +31,11 @@ docker tag tomcat-with-splunk-java-agent:latest USERNAME/tomcat-with-splunk-java
 docker push USERNAME/tomcat-with-splunk-java-agent:latest
 ```
 
+* (Optional) Test it locally
+```
+docker run --rm -p 8080:8080 tomcat-with-splunk-java-agent
+```
+
 * Now let's do the steps in `Elastic Container Service`
   * In AWS Service Search, find `Elastic Container Service` and navigate to it
   * Create a cluster
