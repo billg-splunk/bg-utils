@@ -8,7 +8,7 @@
 <body>
 <h1>Hello World</h1>
 <%
-Logger log = Logger.getLogger("example");
+Logger log = Logger.getLogger("simple_jsp.class");
 log.debug("Show DEBUG message");
 log.info("Show INFO message");
 log.warn("Show WARN message");
