@@ -38,9 +38,9 @@ def addEmail(realm, accessToken, detectorName, emailAddress):
       if response.status_code == 200:
         print("Successfully updated.")
       else:
-        print("Error: Not updated.")
+        print("ERROR: Not updated.")
     else:
-      print("ERROR: Found more than 1 detector. No updated.")
+      print("ERROR: Found more than 1 detector. Not updated.")
       return
   except:
     print("ERROR: Found detector, but unsuccessful updating.")
