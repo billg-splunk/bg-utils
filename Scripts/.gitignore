@@ -2,3 +2,4 @@
 token.yaml
 *.csv
 *.log
+venv
