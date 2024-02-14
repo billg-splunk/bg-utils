@@ -5,6 +5,10 @@
 # Edit token.yaml.sample to contain valid Access Token and Realm rename to token.yaml
 #
 # Syntax: python3 muteAllAutoDetectors.py
+#         to disable all auto detectors
+#
+#         python3 muteAllAutoDetectors.py -e
+#         to re-enable all auto detectors
 
 import argparse
 import yaml
