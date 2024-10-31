@@ -24,6 +24,6 @@ def removeSynthetics(realm, apiToken):
   
 if __name__ == '__main__':
   realm = 'us1'
-  apiToken = 'c3bA_qYzqBKT2RKMFbM9fw'
+  apiToken = 'xxx'
   removeSynthetics(realm, apiToken)
   print('Done.')
