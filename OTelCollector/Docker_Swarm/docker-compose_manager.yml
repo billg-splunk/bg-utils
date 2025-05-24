@@ -4,11 +4,13 @@ services:
     deploy:
       placement: 
         constraints: 
-          - node.role == worker
-      replicas: 2
+          - node.role == manager
+      replicas: 1
     environment:
       - SPLUNK_ACCESS_TOKEN=12345
       - SPLUNK_REALM=us1
+      - SPLUNK_API_URL=https://api.us1.signalfx.com
+      - SPLUNK_INGEST_URL=https://ingest.us1.signalfx.com
     ports:
       - 13133:13133
       - 14250:14250
@@ -21,4 +23,6 @@ services:
       - 9411:9411
       - 9943:9943
     image: quay.io/signalfx/splunk-otel-collector:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 networks: {}
