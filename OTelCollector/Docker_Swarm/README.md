@@ -61,3 +61,37 @@ multipass exec manager -- docker stack services otelcol
 ```
 
 you will know it is deployed when it reaches 2/2.
+
+### Add OTel Config
+
+Let's add an otel config. We will need to place this configuration file on each of the workers so it will be used. (We will also add it to the manager, but since we are only running the collector from the workers this isn't strictly necessary.)
+
+```bash
+# Undeploy
+multipass exec manager -- docker stack rm otelcol
+# Push the compose file and the config file
+multipass transfer docker-compose_config.yml manager:/home/ubuntu/docker-compose.yml
+multipass transfer config1.yml manager:/home/ubuntu/collector.yml
+multipass transfer config1.yml worker1:/home/ubuntu/collector.yml
+multipass transfer config1.yml worker2:/home/ubuntu/collector.yml
+# Deploy
+multipass exec manager -- docker stack deploy --compose-file docker-compose.yml otelcol
+# Verify
+multipass exec manager -- docker stack services otelcol
+```
+
+You can shell into each of the instances and do the regular investigations what's happening:
+
+```bash
+# Go onto the worker
+multipass shell worker1
+# View running containers
+docker ps -a
+# View logs of otel collector
+docker logs [Container ID]
+# Exit back to your host
+exit
+```
+
+Here's an example of the `cpu.utilization` metric being sent:
+![CPU Graph](img/cpu.png)
