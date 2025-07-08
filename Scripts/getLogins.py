@@ -5,6 +5,12 @@
 # Edit token.yaml.sample to contain valid Access Token and Realm rename to token.yaml
 #
 # Syntax: python3 getLogins.py
+#
+# To get a unique list of logins from the last month (example uses jquery and sed):
+# python3 getLogins.py -m 43200 | jq '[[.[].properties.email]|unique]' | sed -n -E -e "s/.*\"(.*)\".*/\1/p" > logins.txt
+#
+# Or to put this on the clipboard (example adds xclip on linux; can also use pbcopy on mac or clip on windows):
+# python3 getLogins.py -m 43200 | jq '[[.[].properties.email]|unique]' | sed -n -E -e "s/.*\"(.*)\".*/\1/p" | xclip -selection clipboard 
 
 import argparse
 from asyncio import current_task
