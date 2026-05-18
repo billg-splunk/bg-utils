@@ -1,0 +1,105 @@
+{
+    "current_config": {
+        "THOUSANDEYES_ACCOUNT_GROUP_ID": "",
+        "THOUSANDEYES_API_TOKEN": "configured",
+        "THOUSANDEYES_DEFAULT_ROLE_IDS": "",
+        "THOUSANDEYES_LOGIN_ACCOUNT_GROUP_ID": ""
+    },
+    "errors": {},
+    "hints": {
+        "current_account_group": {
+            "accountGroupName": "MyAccountGroup",
+            "aid": "2125000",
+            "isCurrentAccountGroup": true,
+            "isDefaultAccountGroup": true,
+            "orgId": "1874000",
+            "organizationName": "MyOrg"
+        },
+        "default_account_group": {
+            "accountGroupName": "MyAccountGroup",
+            "aid": "2125000",
+            "isCurrentAccountGroup": true,
+            "isDefaultAccountGroup": true,
+            "orgId": "1874000",
+            "organizationName": "MyOrg"
+        }
+    },
+    "settings": {
+        "THOUSANDEYES_ACCOUNT_GROUP_ID": {
+            "description": "Account group context for API calls (ThousandEyes aid query parameter). Omit if you only have one account group.",
+            "options": [
+                {
+                    "is_current_account_group": false,
+                    "is_default_account_group": false,
+                    "label": "XYZ",
+                    "org_id": "1005000",
+                    "organization_name": "XYZ",
+                    "value": "2123000"
+                },
+                {
+                    "is_current_account_group": true,
+                    "is_default_account_group": true,
+                    "label": "ABC",
+                    "org_id": "1874000",
+                    "organization_name": "ABC",
+                    "value": "2125000"
+                }
+            ],
+            "suggested_value": "2125000"
+        },
+        "THOUSANDEYES_DEFAULT_ROLE_IDS": {
+            "description": "Comma-separated role IDs assigned to new users (allAccountGroupRoleIds). Use roleId values from the options list.",
+            "options": [
+                {
+                    "has_management_permissions": false,
+                    "is_builtin": true,
+                    "label": "Account Admin",
+                    "value": "5683000"
+                },
+                {
+                    "has_management_permissions": true,
+                    "is_builtin": true,
+                    "label": "Organization Admin",
+                    "value": "5683000"
+                },
+                {
+                    "has_management_permissions": false,
+                    "is_builtin": true,
+                    "label": "Regular User",
+                    "value": "5683000"
+                }
+            ],
+            "suggested_value": "5683000"
+        },
+        "THOUSANDEYES_LOGIN_ACCOUNT_GROUP_ID": {
+            "description": "Account group where new users land when they sign in (loginAccountGroupId). Usually the same aid as THOUSANDEYES_ACCOUNT_GROUP_ID.",
+            "options": [
+                {
+                    "is_current_account_group": false,
+                    "is_default_account_group": false,
+                    "label": "JKL",
+                    "org_id": "1005000",
+                    "organization_name": "JKL",
+                    "value": "2123000"
+                },
+                {
+                    "is_current_account_group": true,
+                    "is_default_account_group": true,
+                    "label": "ABC",
+                    "org_id": "1874000",
+                    "organization_name": "ABC",
+                    "value": "2125000"
+                }
+            ],
+            "suggested_value": "2125000"
+        }
+    },
+    "users_sample": [
+        {
+            "email": "email@cisco.com",
+            "login_account_group": null,
+            "name": "My Name",
+            "uid": "3320000"
+        }
+    ]
+}
