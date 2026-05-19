@@ -15,7 +15,7 @@ k3d runs Kubernetes clusters inside Docker containers, so Docker must be install
 
 | Tool | Documentation |
 | --- | --- |
-| Docker | [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/) |
+| Docker | [Colima installation](https://colima.run/docs/installation/) and [Docker Engine install overview](https://docs.docker.com/engine/install/) |
 | kubectl | [Install kubectl on macOS](https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/) |
 | k3d | [k3d installation](https://k3d.io/stable/#installation) |
 | Helm | [Install Helm](https://helm.sh/docs/intro/install/) |
@@ -25,11 +25,15 @@ k3d runs Kubernetes clusters inside Docker containers, so Docker must be install
 - Use an account with `sudo` rights.
 - Keep `docker`, `kubectl`, `k3d`, and `helm` on your `PATH`.
 - Choose `arm64` downloads for Apple Silicon and `amd64` downloads for Intel.
-- Homebrew is recommended for kubectl, k3d, and Helm, but manual install options are included where useful.
+- Homebrew is recommended for Colima, the Docker CLI, kubectl, k3d, and Helm, but manual install options are included where useful.
 
 ## 1. Docker
 
-Recommended path: Docker Desktop.
+There are two options with docker on Mac:
+* Docker Desktop (recommended)
+* Colima
+
+### Docker Desktop
 
 1. Download the correct installer from the [Docker Desktop for Mac documentation](https://docs.docker.com/desktop/setup/install/mac-install/):
    - Apple Silicon: use the Apple Silicon build.
@@ -53,6 +57,37 @@ Recommended path: Docker Desktop.
 4. Verify the install:
 
    ```bash
+   docker version
+   docker run --rm hello-world
+   ```
+
+### Docker with Colima
+
+Docker Engine runs on Linux. On macOS, Colima provides a lightweight Linux VM and configures the local Docker CLI to talk to the Docker daemon in that VM.
+
+1. Install Colima and the Docker CLI with Homebrew:
+
+   ```bash
+   brew install colima docker
+   ```
+
+2. Start Colima with the Docker runtime:
+
+   ```bash
+   colima start --runtime docker
+   ```
+
+   Optional: allocate more resources for larger k3d clusters.
+
+   ```bash
+   colima stop
+   colima start --runtime docker --cpu 4 --memory 8 --disk 60
+   ```
+
+3. Verify the install:
+
+   ```bash
+   docker context ls
    docker version
    docker run --rm hello-world
    ```
@@ -96,7 +131,7 @@ rm kubectl.sha256
 
 ## 3. k3d
 
-k3d requires Docker and kubectl. Make sure Docker Desktop is running before creating a cluster.
+k3d requires Docker and kubectl. Make sure Colima is running before creating a cluster.
 
 With Homebrew:
 
@@ -144,7 +179,7 @@ helm version
 
 ## End-to-end verification
 
-Run this from Terminal after all four tools are installed and Docker Desktop is running:
+Run this from Terminal after all four tools are installed and Colima is running:
 
 ```bash
 docker version
@@ -166,8 +201,8 @@ k3d cluster delete install-check
 
 ## Troubleshooting
 
-- `docker: command not found`: Docker CLI is not on `PATH`, or Docker Desktop has not finished starting.
-- `Cannot connect to the Docker daemon`: start Docker Desktop and wait until it reports that it is running.
+- `docker: command not found`: Docker CLI is not on `PATH`; install it with `brew install docker`.
+- `Cannot connect to the Docker daemon`: start Colima with `colima start --runtime docker`.
 - `k3d` cannot create a cluster: confirm Docker is running with `docker version`.
 - `kubectl` says connection refused: no cluster is running, or the current kubeconfig context points at a cluster that is offline.
 - `helm` cannot reach Kubernetes: verify `kubectl get nodes` works first.

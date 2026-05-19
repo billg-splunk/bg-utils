@@ -9,131 +9,149 @@ Install these tools in this order:
 3. k3d
 4. Helm
 
-This guide assumes you are using PowerShell with Docker Desktop for Windows. If you prefer WSL2-native tooling, install Docker Desktop with WSL integration, then follow the Linux package instructions inside your WSL distribution where appropriate.
+This guide uses Docker Engine inside an Ubuntu WSL2 distribution. Run the WSL setup commands from PowerShell, then run Docker, kubectl, k3d, and Helm commands inside Ubuntu.
 
 ## Official documentation
 
 | Tool | Documentation |
 | --- | --- |
-| Docker | [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) |
-| kubectl | [Install kubectl on Windows](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/) |
+| WSL | [Install WSL](https://learn.microsoft.com/windows/wsl/install) |
+| Docker | [Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/) |
+| kubectl | [Install kubectl on Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) |
 | k3d | [k3d installation](https://k3d.io/stable/#installation) |
 | Helm | [Install Helm](https://helm.sh/docs/intro/install/) |
 
 ## Prerequisites
 
-- Use a Windows account with administrator rights for machine-wide installs.
-- Use PowerShell for the commands below.
-- Keep `docker`, `kubectl`, `k3d`, and `helm` on your `PATH`.
-- Choose one shell environment for daily use. Avoid splitting some tools into Windows and others into WSL unless you intentionally know which Docker context each shell is using.
+- Use a Windows account with administrator rights to enable or update WSL.
+- Use PowerShell only for WSL setup. Use the Ubuntu WSL shell for the tool installs and daily k3d work.
+- Keep `docker`, `kubectl`, `k3d`, and `helm` on your Linux `PATH` inside WSL.
+- Do not split these tools between Windows PowerShell and WSL unless you intentionally know which Docker socket and kubeconfig each shell is using.
 
 ## 1. Docker
 
-Recommended path: Docker Desktop with the WSL2 backend.
+Recommended path: Ubuntu on WSL2 with Docker Engine.
 
 1. Enable or update WSL2 from an elevated PowerShell prompt:
 
    ```powershell
-   wsl --install
+   wsl --install -d Ubuntu
    wsl --update
    wsl --version
    ```
 
-   Reboot if Windows asks you to.
+   Reboot if Windows asks you to. Open Ubuntu from the Start menu and finish the Linux user setup.
 
-2. Download `Docker Desktop Installer.exe` from the [Docker Desktop for Windows documentation](https://docs.docker.com/desktop/setup/install/windows-install/).
+2. In the Ubuntu WSL shell, add Docker's official package repository:
 
-3. Run the installer interactively and select the WSL2 backend when prompted, or install from PowerShell:
+   ```bash
+   sudo apt update
+   sudo apt install ca-certificates curl
+   sudo install -m 0755 -d /etc/apt/keyrings
+   sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+   sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-   ```powershell
-   # Per-user install; administrator rights are not required.
-   Start-Process 'Docker Desktop Installer.exe' -Wait -ArgumentList 'install', '--user'
+   sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+   Types: deb
+   URIs: https://download.docker.com/linux/ubuntu
+   Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+   Components: stable
+   Architectures: $(dpkg --print-architecture)
+   Signed-By: /etc/apt/keyrings/docker.asc
+   EOF
 
-   # All-users install; run PowerShell as administrator.
-   Start-Process 'Docker Desktop Installer.exe' -Wait -ArgumentList 'install'
+   sudo apt update
    ```
 
-4. If Docker Desktop was installed for all users by a different administrator account, add your user to the `docker-users` group:
+3. Install Docker Engine and plugins:
 
-   ```powershell
-   net localgroup docker-users <your-windows-user> /add
+   ```bash
+   sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
    ```
 
-5. Start Docker Desktop from the Start menu, accept the Docker terms, and wait until Docker reports that it is running.
+4. Start and verify Docker:
 
-6. Verify the install:
+   ```bash
+   sudo systemctl start docker
+   sudo docker run --rm hello-world
+   ```
 
-   ```powershell
-   docker version
+5. Optional: allow your WSL user to run Docker without `sudo`.
+
+   ```bash
+   sudo groupadd docker
+   sudo usermod -aG docker "$USER"
+   newgrp docker
    docker run --rm hello-world
+   ```
+
+   The `docker` group grants root-level privileges inside the WSL distribution. Only add trusted users.
+
+6. Verify the Docker client and daemon:
+
+   ```bash
+   docker version
    ```
 
 ## 2. kubectl
 
 kubectl should generally be within one minor version of the Kubernetes cluster you will use. For local k3d clusters, installing the latest stable kubectl is normally fine.
 
-Use one package manager:
+Run these commands inside Ubuntu WSL:
 
-```powershell
-winget install -e --id Kubernetes.kubectl
-```
+```bash
+ARCH="$(uname -m)"
+case "$ARCH" in
+  x86_64) KUBECTL_ARCH="amd64" ;;
+  aarch64|arm64) KUBECTL_ARCH="arm64" ;;
+  *) echo "Unsupported architecture: $ARCH" && exit 1 ;;
+esac
 
-or:
-
-```powershell
-choco install kubernetes-cli
-```
-
-or:
-
-```powershell
-scoop install kubectl
-```
-
-If package managers are unavailable, install the binary manually. The example below downloads the latest stable `amd64` binary; replace `amd64` with `arm64` if needed.
-
-```powershell
-$KUBECTL_VERSION = (Invoke-WebRequest -UseBasicParsing https://dl.k8s.io/release/stable.txt).Content.Trim()
-curl.exe -LO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/windows/amd64/kubectl.exe"
-curl.exe -LO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/windows/amd64/kubectl.exe.sha256"
-(Get-FileHash -Algorithm SHA256 .\kubectl.exe).Hash -eq (Get-Content .\kubectl.exe.sha256)
-```
-
-Move `kubectl.exe` into a folder on your `PATH`, then verify:
-
-```powershell
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${KUBECTL_ARCH}/kubectl"
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${KUBECTL_ARCH}/kubectl.sha256"
+echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 kubectl version --client
+rm kubectl.sha256
+```
+
+The [official Linux kubectl documentation](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) also includes native package-manager setup for Debian-based, Red Hat-based, and SUSE-based distributions.
+
+Verify:
+
+```bash
 kubectl version --client --output=yaml
 ```
 
-Docker Desktop for Windows may also add a `kubectl` binary to `PATH`. If `kubectl version --client` reports an unexpected version, check your `PATH` ordering.
-
 ## 3. k3d
 
-k3d requires Docker and kubectl. Make sure Docker Desktop is running before creating a cluster.
+k3d requires Docker and kubectl. Make sure Docker Engine is running before creating a cluster.
 
-Install with Chocolatey:
+Install with the official install script inside Ubuntu WSL:
 
-```powershell
-choco install k3d
+```bash
+curl -fsSL -o install-k3d.sh https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh
+less install-k3d.sh
+bash install-k3d.sh
+k3d version
 ```
 
-or with Scoop:
+If you use Homebrew on Linux inside WSL, you can install k3d with:
 
-```powershell
-scoop install k3d
+```bash
+brew install k3d
 ```
 
 Verify:
 
-```powershell
+```bash
 k3d version
 docker version
 ```
 
 Create and delete a test cluster:
 
-```powershell
+```bash
 k3d cluster create dev
 kubectl get nodes
 k3d cluster delete dev
@@ -143,35 +161,40 @@ k3d cluster delete dev
 
 The current upstream Helm documentation defaults to Helm 4. If your project explicitly requires Helm 3, use the [Helm 3 install documentation](https://helm.sh/docs/v3/intro/install/).
 
-Use one package manager:
+Official Helm 4 script:
 
-```powershell
-winget install Helm.Helm
+```bash
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+chmod 700 get_helm.sh
+./get_helm.sh
+helm version
 ```
 
-or:
+Helm 3 script, for projects that still require Helm 3:
 
-```powershell
-choco install kubernetes-helm
+```bash
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+helm version
 ```
 
-or:
+Debian/Ubuntu package repository:
 
-```powershell
-scoop install helm
-```
-
-Verify:
-
-```powershell
+```bash
+sudo apt-get install curl gpg apt-transport-https --yes
+curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+echo "deb [signed-by=/usr/share/keyrings/helm.gpg] https://packages.buildkite.com/helm-linux/helm-debian/any/ any main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+sudo apt-get update
+sudo apt-get install helm
 helm version
 ```
 
 ## End-to-end verification
 
-Run this from PowerShell after all four tools are installed and Docker Desktop is running:
+Run this from Ubuntu WSL after all four tools are installed and Docker Engine is running:
 
-```powershell
+```bash
 docker version
 kubectl version --client
 k3d version
@@ -191,9 +214,10 @@ k3d cluster delete install-check
 
 ## Troubleshooting
 
-- `docker: command not found`: Docker CLI is not on `PATH`, or Docker Desktop has not finished starting.
-- `Cannot connect to the Docker daemon`: start Docker Desktop and wait until it reports that it is running.
+- `docker: command not found`: Docker CLI is not installed in the current WSL distribution or is not on `PATH`.
+- `Cannot connect to the Docker daemon`: run `sudo systemctl start docker` inside Ubuntu WSL.
+- Permission denied on `/var/run/docker.sock`: use `sudo docker ...`, or add your WSL user to the `docker` group and start a new shell.
+- `systemctl` is unavailable: update WSL with `wsl --update`, restart WSL with `wsl --shutdown`, then reopen Ubuntu. If it is still unavailable, enable systemd in `/etc/wsl.conf`, restart WSL again, and retry `sudo systemctl start docker`.
 - `k3d` cannot create a cluster: confirm Docker is running with `docker version`.
 - `kubectl` says connection refused: no cluster is running, or the current kubeconfig context points at a cluster that is offline.
 - `helm` cannot reach Kubernetes: verify `kubectl get nodes` works first.
-- Unexpected `kubectl` version: Docker Desktop may have added its own `kubectl` earlier in `PATH`; adjust `PATH` ordering or use a fully qualified path.
