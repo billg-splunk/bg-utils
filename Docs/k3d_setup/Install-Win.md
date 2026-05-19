@@ -149,12 +149,16 @@ k3d version
 docker version
 ```
 
-Create and delete a test cluster:
+Create a cluster:
 
 ```bash
 k3d cluster create dev
+```
+
+And test it with `kubectl`:
+
+```bash
 kubectl get nodes
-k3d cluster delete dev
 ```
 
 ## 4. Helm

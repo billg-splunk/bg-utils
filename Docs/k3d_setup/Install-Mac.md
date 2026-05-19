@@ -149,13 +149,18 @@ bash install-k3d.sh
 k3d version
 ```
 
-Create and delete a test cluster:
+Create a cluster:
 
 ```bash
 k3d cluster create dev
-kubectl get nodes
-k3d cluster delete dev
 ```
+
+And test it with `kubectl`:
+
+```bash
+kubectl get nodes
+```
+
 
 ## 4. Helm
 

@@ -59,40 +59,31 @@ sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-Start and verify Docker:
-
-```bash
-sudo systemctl status docker
-sudo systemctl start docker
-sudo docker run --rm hello-world
-```
-
-Optional: allow your user to run Docker without `sudo`.
+Allow your user to run Docker without `sudo`. The `docker` group grants root-level privileges on the host. Only add trusted users.
 
 ```bash
 sudo groupadd docker
 sudo usermod -aG docker "$USER"
 newgrp docker
+```
+
+To test everything worked:
+
+```bash
 docker run --rm hello-world
 ```
 
-The `docker` group grants root-level privileges on the host. Only add trusted users.
-
-### Docker Desktop context note
-
-Docker Desktop for Linux and Docker Engine can be installed side by side, but they use different contexts and separate image/container storage. Check and switch contexts with:
+To run a sample app:
 
 ```bash
-docker context ls
-docker context use default
-docker context use desktop-linux
+sudo docker run --rm hello-world
 ```
 
 ## 2. kubectl
 
 kubectl should generally be within one minor version of the Kubernetes cluster you will use. For local k3d clusters, installing the latest stable kubectl is normally fine.
 
-Manual install:
+Install:
 
 ```bash
 ARCH="$(uname -m)"
@@ -127,23 +118,20 @@ With the official install script:
 
 ```bash
 curl -fsSL -o install-k3d.sh https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh
-less install-k3d.sh
 bash install-k3d.sh
 k3d version
 ```
 
-On Arch Linux, the k3d documentation lists the AUR package:
-
-```bash
-yay -S rancher-k3d-bin
-```
-
-Create and delete a test cluster:
+Create a cluster:
 
 ```bash
 k3d cluster create dev
+```
+
+And test it with `kubectl`:
+
+```bash
 kubectl get nodes
-k3d cluster delete dev
 ```
 
 ## 4. Helm
